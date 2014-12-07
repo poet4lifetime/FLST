@@ -90,11 +90,15 @@ for item in hamTrainingData:
 classOfItem = {}
 
 for item in vocabulary:
-    if item not in hamTrainingDataProbability.keys() or spamTrainingDataProbability.keys():
-        pass
+    if item in hamTrainingDataProbability.keys():
+        if item in spamTrainingDataProbability.keys():
+            if hamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
+                classOfItem[item] = 'ham'
+            elif spamTrainingDataProbability[item] > hamTrainingDataProbability[item]:
+                classOfItem[item] = 'spam'
+        else:
+            pass
     else:
-        if hamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
-            classOfItem[item] = 'ham'
-        elif spamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
-            classOfItem[item] = 'spam'
-        print(classOfItem[item])
+        pass
+
+print(classOfItem)
