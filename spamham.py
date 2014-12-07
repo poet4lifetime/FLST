@@ -45,7 +45,7 @@ hamTrainingFile.close()
 
 # number of instances in spam
 totalSpamCount = 0
-
+'''
 for values in spamTrainingData:
     totalSpamCount += spamTrainingData[values]
 
@@ -60,3 +60,23 @@ for values in hamTrainingData:
 print(totalHamCount)
 
 probabilityOfElementInHam = hamTrainingData[item]/totalHamCount
+'''
+
+smoothedLanguageModel = {}
+nPlus = 0
+N = 0
+d = 0.7
+
+# smoothing
+for item in spamTrainingData:
+    N += spamTrainingData[item]
+    if spamTrainingData[item] > 0:
+        nPlus += 1
+
+spamTrainingDataProbability = {}
+
+for item in spamTrainingData:
+    probability = max(spamTrainingData[item] - d, 0.0) / N + (d * nPlus) / N * (len(spamTrainingData))
+    spamTrainingDataProbability[item] = probability
+
+print(spamTrainingDataProbability)
