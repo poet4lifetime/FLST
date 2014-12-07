@@ -43,3 +43,20 @@ for line in hamTrainingFile:
 
 hamTrainingFile.close()
 
+# number of instances in spam
+totalSpamCount = 0
+
+for values in spamTrainingData:
+    totalSpamCount += spamTrainingData[values]
+
+probabilityOfElementInSpam = spamTrainingData[item]/totalSpamCount
+
+# number of instances in ham
+totalHamCount = 0
+
+for values in hamTrainingData:
+    totalHamCount += hamTrainingData[values]
+
+print(totalHamCount)
+
+probabilityOfElementInHam = hamTrainingData[item]/totalHamCount
