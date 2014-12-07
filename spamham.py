@@ -74,9 +74,15 @@ for item in spamTrainingData:
         nPlus += 1
 
 spamTrainingDataProbability = {}
+hamTrainingDataProbability = {}
 
 for item in spamTrainingData:
-    probability = max(spamTrainingData[item] - d, 0.0) / N + (d * nPlus) / N * (len(spamTrainingData))
+    probability = max(spamTrainingData[item] - d, 0.0) / (N + (d * nPlus) / N * (len(spamTrainingData)))
     spamTrainingDataProbability[item] = probability
 
-print(spamTrainingDataProbability)
+print(len(spamTrainingData))
+print(len(hamTrainingData))
+
+for item in hamTrainingData:
+    probability = max(hamTrainingData[item] - d, 0.0) / (N + (d * nPlus) / N * (len(hamTrainingData)))
+    hamTrainingDataProbability[item] = probability
