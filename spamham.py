@@ -62,27 +62,39 @@ print(totalHamCount)
 probabilityOfElementInHam = hamTrainingData[item]/totalHamCount
 '''
 
-smoothedLanguageModel = {}
-nPlus = 0
-N = 0
+nPlusHam = 0
+nPlusSpam = 0
+Nspam = 0
+Nham = 0
 d = 0.7
 
 # smoothing
-for item in spamTrainingData:
-    N += spamTrainingData[item]
-    if spamTrainingData[item] > 0:
-        nPlus += 1
 
 spamTrainingDataProbability = {}
 hamTrainingDataProbability = {}
 
 for item in spamTrainingData:
-    probability = max(spamTrainingData[item] - d, 0.0) / (N + (d * nPlus) / N * (len(spamTrainingData)))
+    Nspam += spamTrainingData[item]
+    if spamTrainingData[item] > 0:
+        nPlusSpam += 1
+    probability = max(spamTrainingData[item] - d, 0.0) / Nspam + ((d * nPlusSpam) / (Nspam * (len(spamTrainingData))))
     spamTrainingDataProbability[item] = probability
 
-print(len(spamTrainingData))
-print(len(hamTrainingData))
-
 for item in hamTrainingData:
-    probability = max(hamTrainingData[item] - d, 0.0) / (N + (d * nPlus) / N * (len(hamTrainingData)))
+    Nham += hamTrainingData[item]
+    if hamTrainingData[item] > 0:
+        nPlusHam += 1
+    probability = max(hamTrainingData[item] - d, 0.0) / Nham + ((d * nPlusHam) / (Nham * (len(hamTrainingData))))
     hamTrainingDataProbability[item] = probability
+
+classOfItem = {}
+
+for item in vocabulary:
+    if item not in hamTrainingDataProbability.keys() or spamTrainingDataProbability.keys():
+        pass
+    else:
+        if hamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
+            classOfItem[item] = 'ham'
+        elif spamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
+            classOfItem[item] = 'spam'
+        print(classOfItem[item])
