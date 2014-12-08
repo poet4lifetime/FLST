@@ -40,22 +40,28 @@ for line in hamTrainingFile:
 hamTrainingFile.close()
 
 testingFile = open('ham_spam_testing', encoding = 'latin1')
-testingData = {}
-#
-email = 0
-for line in testingFile:
-    item = line.strip('\n')
-    if '#*#*#' in item:
-        email += 1
-        testingData[email] = item[6:]
 
-'''
-    if item in vocabulary.keys():
-        if item not in testingData.keys():
-            testingData[item] = 1
-        else:
-            testingData[item] += 1
-'''
+testFile = ''
+for line in testingFile:
+    line = line.strip('\n')
+    testFile += str(line) + ' '
+
+testFile = testFile.split("#*#*#")
+
+for item in range(len(testFile)):
+    testFile[item] = testFile[item].strip(" ").split(" ")
+
+for item in testFile:
+    for element in item:
+        if element not in vocabulary.keys():
+            if "#*#*#"in element:
+                pass
+            else:
+                item[:] = (x for x in item if x != element)
+
+print(testFile[1:5])
+#print(testFile[1][1])
+
 testingFile.close()
 
 ##########################################################################
@@ -105,7 +111,7 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-print(testingData)
+#print(testingData)
 
 
 
