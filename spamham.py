@@ -1,5 +1,7 @@
 __author__ = 'nicky'
 
+import sys
+
 ##########################################################################
 #--------------------------- Reading in files ---------------------------#
 #----------------------- also: feature extraction -----------------------#
@@ -19,8 +21,6 @@ spamTrainingData = {}
 for line in spamTrainingFile:
     item = line.strip('\n')
     if item in vocabulary.keys():
-        if '#*#*#' in item:
-            pass
         if item not in spamTrainingData.keys():
             spamTrainingData[item] = 1
         else:
@@ -41,14 +41,21 @@ hamTrainingFile.close()
 
 testingFile = open('ham_spam_testing', encoding = 'latin1')
 testingData = {}
-# creates dict of ham and spam testing files !occurring in the vocabulary! and number of occurrences as key
+#
+email = 0
 for line in testingFile:
     item = line.strip('\n')
+    if '#*#*#' in item:
+        email += 1
+        testingData[email] = item[6:]
+
+'''
     if item in vocabulary.keys():
         if item not in testingData.keys():
             testingData[item] = 1
         else:
             testingData[item] += 1
+'''
 testingFile.close()
 
 ##########################################################################
@@ -56,7 +63,10 @@ testingFile.close()
 ##########################################################################
 
 # discounting parameter
-d = 0.7
+if len(sys.argv) > 1:
+    d = sys.argv[1]
+else:
+    d = 0.7
 
 # number of occurrences of all elements in spam
 sumNSpam = 0
@@ -94,6 +104,10 @@ for item in hamTrainingData:
 ##########################################################################
 #------------------------------- The test -------------------------------#
 ##########################################################################
+
+print(testingData)
+
+
 
 '''
 classOfItem = {}
