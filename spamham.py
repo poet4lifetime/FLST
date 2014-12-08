@@ -39,6 +39,18 @@ for line in hamTrainingFile:
             hamTrainingData[item] += 1
 hamTrainingFile.close()
 
+testingFile = open('ham_spam_testing', encoding = 'latin1')
+testingData = {}
+# creates dict of ham and spam testing files !occurring in the vocabulary! and number of occurrences as key
+for line in testingFile:
+    item = line.strip('\n')
+    if item in vocabulary.keys():
+        if item not in testingData.keys():
+            testingData[item] = 1
+        else:
+            testingData[item] += 1
+testingFile.close()
+
 ##########################################################################
 #-------------------------------- Counts --------------------------------#
 ##########################################################################
@@ -69,28 +81,19 @@ alphaHam = d * nPlusHam / sumNHam
 #------------------------ Smoothed probabilities ------------------------#
 ##########################################################################
 
+# dictionary of smoothed probabilities of spam
 spamTrainingDataProbability = {}
-hamTrainingDataProbability = {}
-
 for item in spamTrainingData:
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! check whether we need len vocab or len spamTrainData
     spamTrainingDataProbability[item] = (spamTrainingData[item] - d) / sumNSpam + alphaSpam * (1 / len(vocabulary))
 
-    #check how max() works
-    '''
-    probability = max(spamTrainingData[item] - d, 0.0) / Nspam + ((d * nPlusSpam) / (Nspam * (len(spamTrainingData))))
-    spamTrainingDataProbability[item] = probability
-    '''
-
+# dictionary of smoothed probabilities of ham
+hamTrainingDataProbability = {}
 for item in hamTrainingData:
-    #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! check whether we need len vocab or len hamTrainData
     hamTrainingDataProbability[item] = (hamTrainingData[item] - d) / sumNHam + alphaHam * (1 / len(vocabulary))
 
-    #check how max() works
-    '''
-    probability = max(hamTrainingData[item] - d, 0.0) / Nham + ((d * nPlusHam) / (Nham * (len(hamTrainingData))))
-    hamTrainingDataProbability[item] = probability
-    '''
+##########################################################################
+#------------------------------- The test -------------------------------#
+##########################################################################
 
 '''
 classOfItem = {}
