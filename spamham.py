@@ -1,21 +1,28 @@
 __author__ = 'nicky'
 
+#_____________________________Function definitions_____________________________
+'''
+# feature extraction: filters out words that are not in the vocabulary
+def filterOut(dataBase, comparisonVocabulary):
+    newBase = {}
+    for element in dataBase:
+        if dataBase[element] in comparisonVocabulary:
+            newBase[element] = dataBase[element]
+    return newBase
+'''
+#_____________________________Reading in files_____________________________
 
 vocabularyFile = open('vocab_100000.wl', encoding = 'latin1')
 vocabulary = []
-
 # creates list of vocabulary
 for line in vocabularyFile:
     item = line.strip('\n')
     vocabulary.append(item)
-
 vocabularyFile.close()
-
 
 spamTrainingFile = open('spam_training', encoding = 'latin1')
 spamTrainingData = {}
-
-# creates dict of spam training files and freq as key
+# creates dict of spam training files and number of occurrences as key
 for line in spamTrainingFile:
     item = line.strip('\n')
     if '#*#*#' in item:
@@ -24,44 +31,24 @@ for line in spamTrainingFile:
         spamTrainingData[item] = 1
     else:
         spamTrainingData[item] += 1
-
 spamTrainingFile.close()
-
 
 hamTrainingFile = open('ham_training', encoding = 'latin1')
 hamTrainingData = {}
-
-# creates dict of ham training files and freq as key
+# creates dict of ham training files and number of occurrences as key
 for line in hamTrainingFile:
     item = line.strip('\n')
-    if '#*#*#' in item:
-        pass
-    if item not in hamTrainingData.keys():
-        hamTrainingData[item] = 1
-    else:
-        hamTrainingData[item] += 1
-
+    if item in vocabulary:
+        if item not in hamTrainingData.keys():
+            hamTrainingData[item] = 1
+        else:
+            hamTrainingData[item] += 1
 hamTrainingFile.close()
 
-# number of instances in spam
-totalSpamCount = 0
+print(len(hamTrainingData))
+
+
 '''
-for values in spamTrainingData:
-    totalSpamCount += spamTrainingData[values]
-
-probabilityOfElementInSpam = spamTrainingData[item]/totalSpamCount
-
-# number of instances in ham
-totalHamCount = 0
-
-for values in hamTrainingData:
-    totalHamCount += hamTrainingData[values]
-
-print(totalHamCount)
-
-probabilityOfElementInHam = hamTrainingData[item]/totalHamCount
-'''
-
 nPlusHam = 0
 nPlusSpam = 0
 Nspam = 0
@@ -102,3 +89,4 @@ for item in vocabulary:
         pass
 
 print(classOfItem)
+'''
