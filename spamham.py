@@ -110,12 +110,18 @@ hamClassProbability = countHamInTrain / (countSpamInTrain + countHamInTrain)
 # dictionary of smoothed probabilities of spam
 spamTrainingDataProbability = {}
 for item in spamTrainingData:
-    spamTrainingDataProbability[item] = (spamTrainingData[item] - d) / sumNSpam + alphaSpam
+    tmp = spamTrainingData[item] - d
+    if tmp < 0:
+        tmp = 0
+    spamTrainingDataProbability[item] = tmp / sumNSpam + alphaSpam
 
 # dictionary of smoothed probabilities of ham
 hamTrainingDataProbability = {}
 for item in hamTrainingData:
-    hamTrainingDataProbability[item] = (hamTrainingData[item] - d) / sumNHam + alphaHam
+    tmp = hamTrainingData[item] - d
+    if tmp < 0:
+        tmp = 0
+    hamTrainingDataProbability[item] = tmp / sumNHam + alphaHam
 
 ##########################################################################
 #------------------------------- The test -------------------------------#
@@ -144,7 +150,7 @@ for email in testFile:
             elif word not in spamTrainingDataProbability.keys():
                 spamProbability += log(alphaSpam)
     # adding factor of class probability
-    hamProbability += log(spamClassProbability)
+    hamProbability += log(hamClassProbability)
     spamProbability += log(spamClassProbability)
     if hamProbability > spamProbability:
         hamList.append((email, 'ham'))
