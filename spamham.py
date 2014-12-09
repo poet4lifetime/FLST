@@ -46,7 +46,7 @@ for line in testingFile:
     line = line.strip('\n')
     testFile += str(line) + ' '
 # splits testfile into list of emails
-testFile = testFile.split("#*#*#")
+testFile = testFile.split(" #*#*#")
 # splits emails into lists of words
 for item in range(len(testFile)):
     testFile[item] = testFile[item].strip(" ").split(" ")
@@ -107,7 +107,6 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-classOfEmail = {}
 
 countHam = 0
 countSpam = 0
