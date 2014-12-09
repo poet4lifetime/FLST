@@ -1,6 +1,7 @@
 __author__ = 'nicky'
 
 import sys
+from math import log
 
 ##########################################################################
 #--------------------------- Reading in files ---------------------------#
@@ -125,11 +126,11 @@ for email in testFile:
             pass
         else:
             if word in hamTrainingDataProbability.keys():
-                hamProbability += hamTrainingDataProbability[word]
+                hamProbability += log(hamTrainingDataProbability[word])
             elif word not in hamTrainingDataProbability.keys():
                 hamProbability += 0
             if word in spamTrainingDataProbability.keys():
-                spamProbability += spamTrainingDataProbability[word]
+                spamProbability += log(spamTrainingDataProbability[word])
             elif word not in spamTrainingDataProbability.keys():
                 spamProbability += 0
     if hamProbability > spamProbability:
