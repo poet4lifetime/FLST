@@ -87,8 +87,10 @@ nPlusSpam = len(spamTrainingData)
 # number of unique elements in ham
 nPlusHam = len(hamTrainingData)
 
-alphaSpam = d * nPlusSpam / sumNSpam
-alphaHam = d * nPlusHam / sumNHam
+
+# backoff
+alphaSpam = (d * nPlusSpam / sumNSpam) * (1 / len(vocabulary))
+alphaHam = (d * nPlusHam / sumNHam) * (1 / len(vocabulary))
 
 ##########################################################################
 #------------------------ Smoothed probabilities ------------------------#
@@ -97,12 +99,12 @@ alphaHam = d * nPlusHam / sumNHam
 # dictionary of smoothed probabilities of spam
 spamTrainingDataProbability = {}
 for item in spamTrainingData:
-    spamTrainingDataProbability[item] = (spamTrainingData[item] - d) / sumNSpam + alphaSpam * (1 / len(vocabulary))
+    spamTrainingDataProbability[item] = (spamTrainingData[item] - d) / sumNSpam + alphaSpam
 
 # dictionary of smoothed probabilities of ham
 hamTrainingDataProbability = {}
 for item in hamTrainingData:
-    hamTrainingDataProbability[item] = (hamTrainingData[item] - d) / sumNHam + alphaHam * (1 / len(vocabulary))
+    hamTrainingDataProbability[item] = (hamTrainingData[item] - d) / sumNHam + alphaHam
 
 ##########################################################################
 #------------------------------- The test -------------------------------#
@@ -128,11 +130,13 @@ for email in testFile:
             if word in hamTrainingDataProbability.keys():
                 hamProbability += log(hamTrainingDataProbability[word])
             elif word not in hamTrainingDataProbability.keys():
-                hamProbability += 0
+                hamProbability += log(alphaHam)
             if word in spamTrainingDataProbability.keys():
                 spamProbability += log(spamTrainingDataProbability[word])
             elif word not in spamTrainingDataProbability.keys():
-                spamProbability += 0
+                spamProbability += log(alphaSpam)
+    #hamProbability += log(spamClassProbability)
+    #spamProbability += log(spamClassProbability)
     if hamProbability > spamProbability:
         hamList.append((email, 'ham'))
         countHam += 1
