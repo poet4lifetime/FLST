@@ -40,17 +40,17 @@ for line in hamTrainingFile:
 hamTrainingFile.close()
 
 testingFile = open('ham_spam_testing', encoding = 'latin1')
-
 testFile = ''
+# removes newline character and adds spaces between words
 for line in testingFile:
     line = line.strip('\n')
     testFile += str(line) + ' '
-
+# splits testfile into list of emails
 testFile = testFile.split("#*#*#")
-
+# splits emails into lists of words
 for item in range(len(testFile)):
     testFile[item] = testFile[item].strip(" ").split(" ")
-
+# list of emails with lists of words !occuring in the vocabulary! + class at index [0]
 for item in testFile:
     for element in item:
         if element not in vocabulary.keys():
@@ -58,10 +58,6 @@ for item in testFile:
                 pass
             else:
                 item[:] = (x for x in item if x != element)
-
-print(testFile[1:5])
-#print(testFile[1][1])
-
 testingFile.close()
 
 ##########################################################################
@@ -111,24 +107,50 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-#print(testingData)
+classOfEmail = {}
 
+countHam = 0
+countSpam = 0
+count = 0
+misClassSpamToHam = 0
+misClassHamToSpam = 0
+hamList = []
+spamList = []
+unknownList = []
 
-
-'''
-classOfItem = {}
-
-for item in vocabulary:
-    if item in hamTrainingDataProbability.keys():
-        if item in spamTrainingDataProbability.keys():
-            if hamTrainingDataProbability[item] > spamTrainingDataProbability[item]:
-                classOfItem[item] = 'ham'
-            elif spamTrainingDataProbability[item] > hamTrainingDataProbability[item]:
-                classOfItem[item] = 'spam'
-        else:
+for email in testFile:
+    hamProbability = 0
+    spamProbability = 0
+    for word in email:
+        if word == 'spam' or word == 'ham':
             pass
+        else:
+            if word in hamTrainingDataProbability.keys():
+                hamProbability += hamTrainingDataProbability[word]
+            elif word not in hamTrainingDataProbability.keys():
+                hamProbability += 0
+            if word in spamTrainingDataProbability.keys():
+                spamProbability += spamTrainingDataProbability[word]
+            elif word not in spamTrainingDataProbability.keys():
+                spamProbability += 0
+    if hamProbability > spamProbability:
+        hamList.append((email, 'ham'))
+        countHam += 1
+    elif spamProbability > hamProbability:
+        spamList.append((email, 'spam'))
+        countSpam += 1
     else:
-        pass
+        unknownList.append((email, 'unknown'))
+        count += 1
 
-print(classOfItem)
-'''
+print(countHam, countSpam, count)
+
+for tuplePair in hamList:
+    if tuplePair[0][0] == 'spam':
+        misClassSpamToHam += 1
+
+for tuplePair in spamList:
+    if tuplePair[0][0] == 'ham':
+        misClassHamToSpam += 1
+
+print(misClassSpamToHam, misClassHamToSpam)
