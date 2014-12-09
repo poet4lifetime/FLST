@@ -63,8 +63,8 @@ for item in range(len(testFile)):
 for item in testFile:
     for element in item:
         if element not in vocabulary.keys():
-            if "#*#*#"in element:
-                pass
+            if "#*#*#" in element:
+                item.remove(element)
             else:
                 item[:] = (x for x in item if x != element)
 testingFile.close()
@@ -127,12 +127,10 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-count = 0
 misClassSpamToHam = 0
 misClassHamToSpam = 0
 hamList = []
 spamList = []
-unknownList = []
 
 for email in testFile:
     hamProbability = 0
@@ -152,21 +150,20 @@ for email in testFile:
     # adding factor of class probability
     hamProbability += log(hamClassProbability)
     spamProbability += log(spamClassProbability)
-    if hamProbability > spamProbability:
+    if hamProbability >= spamProbability:
         hamList.append((email, 'ham'))
     elif spamProbability > hamProbability:
         spamList.append((email, 'spam'))
-    else:
-        unknownList.append((email, 'unknown'))
-
-print(len(hamList), len(spamList), len(unknownList))
 
 for tuplePair in hamList:
+    print(tuplePair[0][0])
     if tuplePair[0][0] == 'spam':
         misClassSpamToHam += 1
 
 for tuplePair in spamList:
+    print(tuplePair[0][0])
     if tuplePair[0][0] == 'ham':
         misClassHamToSpam += 1
 
-print(misClassSpamToHam, misClassHamToSpam)
+print('Number of misclassified emails: ', (misClassSpamToHam + misClassHamToSpam))
+print('Number of correctly classified emails: ', (500 - misClassHamToSpam - misClassSpamToHam))
