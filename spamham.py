@@ -16,11 +16,15 @@ for line in vocabularyFile:
     vocabulary[item] = 0
 vocabularyFile.close()
 
+countSpamInTrain = 0
+
 spamTrainingFile = open('spam_training', encoding = 'latin1')
 spamTrainingData = {}
 # creates dict of spam training files !occurring in the vocabulary! and number of occurrences as key
 for line in spamTrainingFile:
     item = line.strip('\n')
+    if '#*#*#' in item:
+        countSpamInTrain += 1
     if item in vocabulary.keys():
         if item not in spamTrainingData.keys():
             spamTrainingData[item] = 1
@@ -28,11 +32,15 @@ for line in spamTrainingFile:
             spamTrainingData[item] += 1
 spamTrainingFile.close()
 
+countHamInTrain = 0
+
 hamTrainingFile = open('ham_training', encoding = 'latin1')
 hamTrainingData = {}
 # creates dict of ham training files !occurring in the vocabulary! and number of occurrences as key
 for line in hamTrainingFile:
     item = line.strip('\n')
+    if '#*#*#' in item:
+        countHamInTrain += 1
     if item in vocabulary.keys():
         if item not in hamTrainingData.keys():
             hamTrainingData[item] = 1
@@ -87,10 +95,13 @@ nPlusSpam = len(spamTrainingData)
 # number of unique elements in ham
 nPlusHam = len(hamTrainingData)
 
-
 # backoff
 alphaSpam = (d * nPlusSpam / sumNSpam) * (1 / len(vocabulary))
 alphaHam = (d * nPlusHam / sumNHam) * (1 / len(vocabulary))
+
+# class probabilities
+spamClassProbability = countSpamInTrain / (countSpamInTrain + countHamInTrain)
+hamClassProbability = countHamInTrain / (countSpamInTrain + countHamInTrain)
 
 ##########################################################################
 #------------------------ Smoothed probabilities ------------------------#
@@ -110,9 +121,6 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-
-countHam = 0
-countSpam = 0
 count = 0
 misClassSpamToHam = 0
 misClassHamToSpam = 0
@@ -135,19 +143,17 @@ for email in testFile:
                 spamProbability += log(spamTrainingDataProbability[word])
             elif word not in spamTrainingDataProbability.keys():
                 spamProbability += log(alphaSpam)
-    #hamProbability += log(spamClassProbability)
-    #spamProbability += log(spamClassProbability)
+    # adding factor of class probability
+    hamProbability += log(spamClassProbability)
+    spamProbability += log(spamClassProbability)
     if hamProbability > spamProbability:
         hamList.append((email, 'ham'))
-        countHam += 1
     elif spamProbability > hamProbability:
         spamList.append((email, 'spam'))
-        countSpam += 1
     else:
         unknownList.append((email, 'unknown'))
-        count += 1
 
-print(countHam, countSpam, count)
+print(len(hamList), len(spamList), len(unknownList))
 
 for tuplePair in hamList:
     if tuplePair[0][0] == 'spam':
