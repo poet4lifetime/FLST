@@ -1,4 +1,9 @@
-__author__ = 'nicky'
+'''
+Group Names:
+Aniko Kovacs, Matriculation #: 2556570
+Alena Vasilevich, Matriculation #: 2556836
+Tyler Klement, Matriculation #: 2556065
+'''
 
 import sys
 from math import log
@@ -165,5 +170,7 @@ for tuplePair in spamList:
     if tuplePair[0][0] == 'ham':
         misClassHamToSpam += 1
 
-print('Number of misclassified emails: ', (misClassSpamToHam + misClassHamToSpam))
-print('Number of correctly classified emails: ', (500 - misClassHamToSpam - misClassSpamToHam))
+print('Spam class probability:', spamClassProbability)
+print('Ham class probability:', hamClassProbability)
+print('Number of misclassified emails:', (misClassSpamToHam + misClassHamToSpam))
+print('Number of correctly classified emails:', (500 - misClassHamToSpam - misClassSpamToHam))
