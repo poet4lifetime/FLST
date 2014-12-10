@@ -1,3 +1,5 @@
+# NOTE: code is written in Python 3.4.1 and is incompatible with Python 2.x versions
+
 ##############################################
 # Group Names <3                             #
 # -------------------------------------------#
