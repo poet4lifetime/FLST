@@ -1,9 +1,4 @@
-'''
-Group Names:
-Aniko Kovacs, Matriculation #: 2556570
-Alena Vasilevich, Matriculation #: 2556836
-Tyler Klement, Matriculation #: 2556065
-'''
+__author__ = 'nicky'
 
 import sys
 from math import log
@@ -13,7 +8,7 @@ from math import log
 #----------------------- also: feature extraction -----------------------#
 ##########################################################################
 
-vocabularyFile = open('vocab_100000.wl', encoding='latin1')
+vocabularyFile = open('vocab_100000.wl', encoding = 'latin1')
 vocabulary = {}
 # creates a dictionary out of vocabulary with default value 0
 for line in vocabularyFile:
@@ -23,7 +18,7 @@ vocabularyFile.close()
 
 countSpamInTrain = 0
 
-spamTrainingFile = open('spam_training', encoding='latin1')
+spamTrainingFile = open('spam_training', encoding = 'latin1')
 spamTrainingData = {}
 # creates dict of spam training files !occurring in the vocabulary! and number of occurrences as key
 for line in spamTrainingFile:
@@ -39,7 +34,7 @@ spamTrainingFile.close()
 
 countHamInTrain = 0
 
-hamTrainingFile = open('ham_training', encoding='latin1')
+hamTrainingFile = open('ham_training', encoding = 'latin1')
 hamTrainingData = {}
 # creates dict of ham training files !occurring in the vocabulary! and number of occurrences as key
 for line in hamTrainingFile:
@@ -53,7 +48,7 @@ for line in hamTrainingFile:
             hamTrainingData[item] += 1
 hamTrainingFile.close()
 
-testingFile = open('ham_spam_testing', encoding='latin1')
+testingFile = open('ham_spam_testing', encoding = 'latin1')
 testFile = ''
 # removes newline character and adds spaces between words
 for line in testingFile:
@@ -68,8 +63,8 @@ for item in range(len(testFile)):
 for item in testFile:
     for element in item:
         if element not in vocabulary.keys():
-            if "#*#*#"in element:
-                pass
+            if "#*#*#" in element:
+                item.remove(element)
             else:
                 item[:] = (x for x in item if x != element)
 testingFile.close()
@@ -106,9 +101,7 @@ alphaHam = (d * nPlusHam / sumNHam) * (1 / len(vocabulary))
 
 # class probabilities
 spamClassProbability = countSpamInTrain / (countSpamInTrain + countHamInTrain)
-print("Spam class prob:", spamClassProbability)
 hamClassProbability = countHamInTrain / (countSpamInTrain + countHamInTrain)
-print("Ham class prob:", hamClassProbability)
 
 ##########################################################################
 #------------------------ Smoothed probabilities ------------------------#
@@ -134,12 +127,10 @@ for item in hamTrainingData:
 #------------------------------- The test -------------------------------#
 ##########################################################################
 
-count = 0
 misClassSpamToHam = 0
 misClassHamToSpam = 0
 hamList = []
 spamList = []
-unknownList = []
 
 for email in testFile:
     hamProbability = 0
@@ -159,24 +150,20 @@ for email in testFile:
     # adding factor of class probability
     hamProbability += log(hamClassProbability)
     spamProbability += log(spamClassProbability)
-    if hamProbability > spamProbability:
+    if hamProbability >= spamProbability:
         hamList.append((email, 'ham'))
     elif spamProbability > hamProbability:
         spamList.append((email, 'spam'))
-    else:
-        unknownList.append((email, 'unknown'))
-
-print("Ham list length:", len(hamList))
-print("Spam list length:", len(spamList))
-print("Unknown list length:", len(unknownList))
 
 for tuplePair in hamList:
+    print(tuplePair[0][0])
     if tuplePair[0][0] == 'spam':
         misClassSpamToHam += 1
 
 for tuplePair in spamList:
+    print(tuplePair[0][0])
     if tuplePair[0][0] == 'ham':
         misClassHamToSpam += 1
 
-print("Misclassified spam to ham:", misClassSpamToHam)
-print("Misclassified ham to spam:", misClassHamToSpam)
+print('Number of misclassified emails: ', (misClassSpamToHam + misClassHamToSpam))
+print('Number of correctly classified emails: ', (500 - misClassHamToSpam - misClassSpamToHam))
