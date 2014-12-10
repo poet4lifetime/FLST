@@ -1,9 +1,10 @@
-'''
-Group Names:
-Aniko Kovacs, Matriculation #: 2556570
-Alena Vasilevich, Matriculation #: 2556836
-Tyler Klement, Matriculation #: 2556065
-'''
+##############################################
+# Group Names                                #
+# -------------------------------------------#
+# Aniko Kovacs, Matriculation #: 2556570     #
+# Alena Vasilevich, Matriculation #: 2556836 #
+# Tyler Klement, Matriculation #: 2556065    #
+##############################################
 
 import sys
 from math import log
@@ -129,7 +130,7 @@ for item in hamTrainingData:
     hamTrainingDataProbability[item] = tmp / sumNHam + alphaHam
 
 ##########################################################################
-#------------------------------- The test -------------------------------#
+#---------------------------- Classification ----------------------------#
 ##########################################################################
 
 misClassSpamToHam = 0
@@ -160,17 +161,19 @@ for email in testFile:
     elif spamProbability > hamProbability:
         spamList.append((email, 'spam'))
 
+
+i = 1
 for tuplePair in hamList:
-    print(tuplePair[0][0])
+    print(i, tuplePair[0][0], "classified as HAM")
     if tuplePair[0][0] == 'spam':
         misClassSpamToHam += 1
+    i += 1
 
 for tuplePair in spamList:
-    print(tuplePair[0][0])
+    print(i, tuplePair[0][0], "classified as SPAM")
     if tuplePair[0][0] == 'ham':
         misClassHamToSpam += 1
+    i += 1
 
-print('Spam class probability:', spamClassProbability)
-print('Ham class probability:', hamClassProbability)
 print('Number of misclassified emails:', (misClassSpamToHam + misClassHamToSpam))
 print('Number of correctly classified emails:', (500 - misClassHamToSpam - misClassSpamToHam))
