@@ -1,5 +1,5 @@
 ##############################################
-# Group Names                                #
+# Group Names <3                             #
 # -------------------------------------------#
 # Aniko Kovacs, Matriculation #: 2556570     #
 # Alena Vasilevich, Matriculation #: 2556836 #
@@ -101,7 +101,7 @@ nPlusSpam = len(spamTrainingData)
 # number of unique elements in ham
 nPlusHam = len(hamTrainingData)
 
-# backoff
+# backoff (the variable is called alpha, but it's not only alpha)
 alphaSpam = (d * nPlusSpam / sumNSpam) * (1 / len(vocabulary))
 alphaHam = (d * nPlusHam / sumNHam) * (1 / len(vocabulary))
 
@@ -142,9 +142,12 @@ for email in testFile:
     hamProbability = 0
     spamProbability = 0
     for word in email:
+        # skips prior class labels at index [0] from factoring in into probability counts
         if word == 'spam' or word == 'ham':
             pass
         else:
+            # adds the probability of the word from the training data if the word is in the data
+            # adds 'default' if the word is not in the data (without this and with changed directions of evaluation in ln 162, 164, misclassification error is less by 4, but some ham emails end up in spam)
             if word in hamTrainingDataProbability.keys():
                 hamProbability += log(hamTrainingDataProbability[word])
             elif word not in hamTrainingDataProbability.keys():
@@ -156,12 +159,18 @@ for email in testFile:
     # adding factor of class probability
     hamProbability += log(hamClassProbability)
     spamProbability += log(spamClassProbability)
+    # classifies emails into two lists, containing tuples with the email and new class label pairs
     if hamProbability >= spamProbability:
         hamList.append((email, 'ham'))
     elif spamProbability > hamProbability:
         spamList.append((email, 'spam'))
 
+##########################################################################
+#---------------------------- Result outputs ----------------------------#
+##########################################################################
 
+
+# enumerate emails and print out number of email, prior class and new class
 i = 1
 for tuplePair in hamList:
     print(i, tuplePair[0][0], "classified as HAM")
@@ -175,5 +184,7 @@ for tuplePair in spamList:
         misClassHamToSpam += 1
     i += 1
 
+# print out total number of misclassified emails
 print('Number of misclassified emails:', (misClassSpamToHam + misClassHamToSpam))
+# print out total number of correctly classified emails
 print('Number of correctly classified emails:', (500 - misClassHamToSpam - misClassSpamToHam))
